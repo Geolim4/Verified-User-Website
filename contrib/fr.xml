@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: https://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[Verified User Website (French Translation))]]></title>
+		<title lang="fr"><![CDATA[Verified User Website (Traduction Française))]]></title>
+		<description lang="en"><![CDATA[This Mod will allow users to confirm they are really owner of their website profile link.]]></description>
+		<description lang="fr"><![CDATA[Ce mod va permettre aux utilisateurs de confirmer qu'ils sont réellement le propriétaire du lien du site de leur profil.]]></description>
+		<author-group>
+			<author>
+				<realname><![CDATA[Georges.L]]></realname>
+				<username><![CDATA[Geolim4]]></username>
+				<homepage><![CDATA[http://geolim4.com]]></homepage>
+			</author>
+		</author-group>
+		<mod-version>1.0.0</mod-version>
+		<installation>
+			<level>intermediate</level>
+			<time>60</time>
+			<target-version>3.0.12</target-version>
+		</installation>
+		<link-group>
+			<link type="parent" href="../install_mod.xml" lang="en">Main Install</link>
+			<link type="parent" href="../install_mod.xml" lang="fr">Installation principale</link>
+		</link-group>
+	</header>
+	<action-group>
+		<open src="language/fr/common.php">
+			<edit>
+				<find><![CDATA[	'VIEWED'					=> 'Vu',]]></find>
+				<action type="before-add"><![CDATA[	//--- Begin MOD: Verified User Website
+	'VERIFIED'					=> 'Vérifié',
+	//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="language/fr/ucp.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[//--- Begin MOD: Verified User Website
+$lang = array_merge($lang, array(
+	'WEBSITE_VERIFY'		=> 'Vérifier le site Internet',
+	'WEBSITE_ERROR'			=> 'La vérification a échouée: Impossible de trouver le fichier ou la meta de vérification!',
+	'WEBSITE_REQUIRED'		=> '<em>Requis pour changer le site Internet</em>',
+	'WEBSITE_VERIFY_PROCEED'=> 'Procéder à la vérification du site Internet',
+	'WEBSITE_UNVERIFY'		=> 'Révoquer la vérification du site Internet',
+	'WEBSITE_VERIFIED_OK'	=> 'Site Internet vérifié',
+	'WEBSITE_VERIFIED_NO'	=> 'Site Internet non vérifié',
+	//To validation Team: Using Hardcoded HTML because passed through trigger_error()...
+	'WEBSITE_VERIFY_EXP'	=> 'Afin de compléter la vérification de votre site Internet, cette étape consite à vérifier que vous êtes bien le propriétaire de celui-ci.
+								<br /> Pour ce faire deux solutions sont possibles:
+								<ul class="linklist navlinks"><li>&bull; Placer le fichier <em><a href="%1$s">%2$s</a></em> dans la racine de votre site Internet: 
+								<br /><em>http://exemple.com/%2$s</em></li>
+								<li>&bull; Insérer la balise meta suivante entre les balises &lt;head&gt;&lt;/head&gt; de votre index racine.
+								<br /><em>%3$s</em>
+								</ul>',
+));
+//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+	</action-group>
+</mod>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[Verified User Website (Update from 0.1.0))]]></title>
+		<title lang="fr"><![CDATA[Verified User Website (Mise à jour depuis 0.1.0))]]></title>
+		<description lang="en"><![CDATA[This Mod will allow users to confirm they are really owner of their website profile link.]]></description>
+		<description lang="fr"><![CDATA[Ce mod va permettre aux utilisateurs de confirmer qu'ils sont réellement le propriétaire du lien du site de leur profil.]]></description>
+		<author-group>
+			<author>
+				<realname><![CDATA[Georges.L]]></realname>
+				<username><![CDATA[Geolim4]]></username>
+				<homepage><![CDATA[http://geolim4.com]]></homepage>
+			</author>
+		</author-group>
+		<mod-version>0.2.0</mod-version>
+		<installation>
+			<level>intermediate</level>
+			<time>60</time>
+			<target-version>3.0.11</target-version>
+		</installation>
+		<link-group>
+			<link type="parent" href="../install_mod.xml" lang="en">Main Install</link>
+			<link type="parent" href="../install_mod.xml" lang="fr">Installation principale</link>
+		</link-group>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/images/vuw_umil.png" to="images/vuw_umil.png"/>
+			<file from="root/includes/website_verify/file.html" to="includes/website_verify/file.html"/>
+			<file from="root/styles/prosilver/imageset/icon_contact_www_vd.gif" to="styles/prosilver/imageset/icon_contact_www_vd.gif"/>
+			<file from="root/vuw_install.php" to="vuw_install.php"/>
+		</copy>
+		<open src="includes/ucp/ucp_profile.php">
+			<edit>
+				<find><![CDATA[		preg_match('#^(http|https|ftp):\/\/(.*)\/?(.?)#', $website_url, $matches);
+		$extract_host = $matches[2];]]></find>
+				<action type="replace-with"><![CDATA[		preg_match('/https?:\/\/([^\/]+)\//i', $website_url, $matches);
+		$extract_host = $matches[1];]]></action>
+			</edit>
+		</open>
+	</action-group>
+</mod>

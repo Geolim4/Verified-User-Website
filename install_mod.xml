@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[Verified User Website]]></title>
+		<description lang="en"><![CDATA[This Mod will allow users to confirm they are really owner of their website profile link.]]></description>
+		<description lang="fr"><![CDATA[Ce mod va permettre aux utilisateurs de confirmer qu'ils sont réellement le propriétaire du lien du site de leur profil.]]></description>
+		<author-group>
+			<author>
+				<realname><![CDATA[Georges.L]]></realname>
+				<username><![CDATA[Geolim4]]></username>
+				<homepage><![CDATA[http://geolim4.com]]></homepage>
+			</author>
+		</author-group>
+		<mod-version>1.0.0</mod-version>
+		<installation>
+			<level>intermediate</level>
+			<time>1500</time>
+			<target-version>3.0.12</target-version>
+		</installation>
+		<history>
+			<entry>
+				<date>2013-06-15</date>
+				<rev-version>0.2.0</rev-version>
+				<changelog lang="en">
+					<change>Fixed bug with URLs which contain a / in the end</change>
+				</changelog>
+				<changelog lang="fr">
+					<change>Correction d'un bug des URLs avec un / à la fin</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2013-06-18</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change>Replaced inline style attribute with a CSS Class</change>
+					<change>Improved better website icon (green verified colour)</change>
+				</changelog>
+				<changelog lang="fr">
+					<change>Remplacement des attributs de style inline par une classe CSS</change>
+					<change>Amélioration de l'image du site Internet (Couleur vérifiée verte)</change>
+				</changelog>
+			</entry>
+		</history>
+		<link-group>
+			<link type="language" href="contrib/fr.xml" lang="en">French Language</link>
+			<link type="language" href="contrib/fr.xml" lang="fr">Traduction Française</link>
+			<link type="contrib" href="contrib/mod_version_check.xml" lang="en">MOD version check Addon</link>
+			<link type="contrib" href="contrib/mod_version_check.xml" lang="fr">MOD version check Addon</link>
+			<link type="contrib" href="contrib/update_0.1.0_to_0.2.0.xml" lang="en">Update from version 0.1.0</link>
+			<link type="contrib" href="contrib/update_0.1.0_to_0.2.0.xml" lang="fr">Mise à jour depuis la version 0.1.0</link>
+		</link-group>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/images/vuw_umil.png" to="images/vuw_umil.png"/>
+			<file from="root/includes/website_verify/file.html" to="includes/website_verify/file.html"/>
+			<file from="root/styles/prosilver/imageset/icon_contact_www_vd.gif" to="styles/prosilver/imageset/icon_contact_www_vd.gif"/>
+			<file from="root/umil/*.*" to="umil/*.*"/>
+			<file from="root/vuw_install.php" to="vuw_install.php"/>
+		</copy>
+		<open src="memberlist.php">
+			<edit>
+				<find><![CDATA[		'U_WWW'			=> (!empty($data['user_website'])) ? $data['user_website'] : '',]]></find>
+				<action type="after-add"><![CDATA[		//--- Begin MOD: Verified User Website
+		'U_WWW_VERIFIED'=> (!empty($data['user_website_verified'])) ? $data['user_website_verified'] : '',
+		//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[				'www'				=> '',]]></find>
+				<action type="after-add"><![CDATA[				//--- Begin MOD: Verified User Website
+				'www_verified'		=> '',
+				//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				'www'			=> $row['user_website'],]]></find>
+				<action type="after-add"><![CDATA[				//--- Begin MOD: Verified User Website
+				'www_verified'	=> $row['user_website_verified'] ? $row['user_website'] : '',
+				//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		'U_WWW'			=> $user_cache[$poster_id]['www'],]]></find>
+				<action type="after-add"><![CDATA[		//--- Begin MOD: Verified User Website
+		'U_WWW_VERIFIED'=> $user_cache[$poster_id]['www_verified'],
+		//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="adm/style/acp_users_profile.html">
+			<edit>
+				<find><![CDATA[		<dd><input type="text" id="website" name="website" value="{WEBSITE}" /></dd>]]></find>
+				<action type="after-add"><![CDATA[		<dd>
+			<label for="website_verify1">{L_WEBSITE_VERIFY}:</label>
+			<label for="website_verify1"><input type="radio" name="website_verify" id="website_verify1" value="1"<!-- IF S_WEBSITE_VERIFIED --> checked="checked"<!-- ENDIF --> /> {L_YES}</label> 
+			<label for="website_verify0"><input type="radio" name="website_verify" id="website_verify0" value="0"<!-- IF not S_WEBSITE_VERIFIED --> checked="checked"<!-- ENDIF --> /> {L_NO}</label>
+		</dd>]]></action>
+			</edit>
+		</open>
+		<open src="includes/acp/acp_styles.php">
+			<edit>
+				<find><![CDATA[			'buttons'	=> array(]]></find>
+				<action type="after-add"><![CDATA[			//--- Begin MOD: Verified User Website
+			//--- ADD INLINE:  'icon_contact_www_vd',]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				'icon_back_top', 'icon_contact_aim', 'icon_contact_email', 'icon_contact_icq', 'icon_contact_jabber', 'icon_contact_msnm', 'icon_contact_pm', 'icon_contact_yahoo', 'icon_contact_www', 'icon_post_delete', 'icon_post_edit', 'icon_post_info', 'icon_post_quote', 'icon_post_report', 'icon_user_online', 'icon_user_offline', 'icon_user_profile', 'icon_user_search', 'icon_user_warn', 'button_pm_forward', 'button_pm_new', 'button_pm_reply', 'button_topic_locked', 'button_topic_new', 'button_topic_reply',]]></find>
+				<inline-edit>
+					<inline-find><![CDATA['icon_contact_www',]]></inline-find>
+					<inline-action type="after-add"><![CDATA[ 'icon_contact_www_vd',]]></inline-action>
+				</inline-edit>
+			</edit>
+			<edit>
+				<find><![CDATA[			),]]></find>
+				<action type="after-add"><![CDATA[			//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="includes/acp/acp_users.php">
+			<edit>
+				<find><![CDATA[				if ($user_row['user_birthday'])]]></find>
+				<action type="before-add"><![CDATA[				//--- Begin MOD: Verified User Website
+				$data += array(
+					'website_verified'		=> request_var('website_verify', $user_row['user_website_verified']),
+				);
+				if( empty($data['website_verified']) && $user_row['user_website_verified'] )
+				{
+						//Update the key if the User Website was verified and we turn off the verification
+						$rand_key = strrev(strtolower(gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4)));
+						$sql_array = array(
+							'user_website_verify_key' => $rand_key,
+						);
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_array) . '
+							WHERE user_id = ' . (int) $user_id;
+						$db->sql_query($sql);
+				}
+				//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[						$sql = 'UPDATE ' . USERS_TABLE . ']]></find>
+				<comment lang="en"><![CDATA[Line 1398~~]]></comment>
+				<comment lang="fr"><![CDATA[Ligne 1398~~]]></comment>
+				<action type="before-add"><![CDATA[						//--- Begin MOD: Verified User Website
+						$sql_ary += array(
+							'user_website_verified' => $data['website_verified']
+						);
+						//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				// Get additional profile fields and assign them to the template block var 'profile_fields']]></find>
+				<action type="before-add"><![CDATA[				//--- Begin MOD: Verified User Website
+				$template->assign_var('S_WEBSITE_VERIFIED', $data['website_verified']);
+				//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="includes/ucp/ucp_pm_viewmessage.php">
+			<edit>
+				<find><![CDATA[		'U_WWW'			=> (!empty($user_info['user_website'])) ? $user_info['user_website'] : '',]]></find>
+				<action type="after-add"><![CDATA[		//--- Begin MOD: Verified User Website
+		'U_WWW_VERIFIED'=> (!empty($user_info['user_website_verified'])) ? $user_info['user_website_verified'] : '',
+		//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="includes/ucp/ucp_profile.php">
+			<edit>
+				<find><![CDATA[				if ($config['allow_birthdays'])
+				{
+					$data['bday_day'] = $data['bday_month'] = $data['bday_year'] = 0;]]></find>
+				<action type="before-add"><![CDATA[				//--- Begin MOD: Verified User Website
+				$data += array(
+					'website_verified'	=> $user->data['user_website_verified'],
+					'website_verify'	=> request_var('website_verify', 1),
+					'verify'			=> request_var('verify', '0'),//We can pass a string too
+					'unverify'			=> request_var('unverify', 0),
+				);
+				if( $data['unverify'] )
+				{
+					if (confirm_box(true))
+					{
+						$rand_key = strrev(strtolower(gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4)));
+						$sql_array = array(
+							'user_website_verify_key' => $rand_key,
+							'user_website_verified' => 0
+						);
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_array) . '
+							WHERE user_id = ' . (int) $user->data['user_id'];
+						$db->sql_query($sql);
+						$data['website_verified'] = 0;
+					}
+					else
+					{
+						$s_hidden_fields = build_hidden_fields(array(
+							'unverify'	=> 1,
+							)
+						);
+						//display mode
+						confirm_box(false, $user->lang['CONFIRM_OPERATION'], $s_hidden_fields);
+					}
+				}
+				if( $data['verify'] == FIELD_INT )/* :mrgreen: Marc */
+				{
+					if(empty($user->data['user_website_verify_key']))
+					{
+						$rand_key = strrev(strtolower(gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4)));
+						$rand_file = $rand_key . '.html';
+						$rand_meta = '<textarea rows="1" cols="1" class="inputbox medium" readonly="readonly">&lt;meta name="phpbb_verify" content="' . $rand_key . '" /&gt;</textarea>';
+						$sql_array = array(
+							'user_website_verify_key' => $rand_key,
+						);
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_array) . '
+							WHERE user_id = ' . (int) $user->data['user_id'];
+						$db->sql_query($sql);
+					}
+					else
+					{
+						$rand_key = $user->data['user_website_verify_key'];
+						$rand_file = $user->data['user_website_verify_key'] . '.html';
+						$rand_meta = '<textarea rows="1" cols="1" class="inputbox medium" readonly="readonly">&lt;meta name="phpbb_verify" content="' . $rand_key . '" /&gt;</textarea>';
+					}
+					
+					$msg = $user->lang('WEBSITE_VERIFY_EXP', $this->u_action . "&amp;verify=file", $rand_file, $rand_meta);
+					trigger_error($msg);
+				}
+				else if( $data['verify'] == 'file' )
+				{
+					if(empty($user->data['user_website_verify_key']))
+					{
+						$rand_key = strrev(strtolower(gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4)));
+						$sql_array = array(
+							'user_website_verify_key' => $rand_key,
+						);
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_array) . '
+							WHERE user_id = ' . (int) $user->data['user_id'];
+						$db->sql_query($sql);
+					}
+					else
+					{
+						$rand_key = $user->data['user_website_verify_key'];
+					}
+					$file_path = $phpbb_root_path . "includes/website_verify/file.html";
+					$file = @fopen($file_path, 'r');
+					header('Content-Description: File Transfer');
+					header('Accept-Charset: utf-8');
+					header('Cache-Control: no-cache');
+					header('Pragma: no-cache');
+					header('Accept-Ranges: bytes');
+					header('Content-Type: text/html');
+					header('Content-Length: ' . filesize($file_path));//RE-QUI-RED !!!
+					// Send file headers
+					header('Content-Disposition: attachment; filename=' . $rand_key . '.html');
+					//Clean Headers
+					flush();
+					readfile($file_path);
+				}
+				//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[					// validate custom profile fields
+					$cp->submit_cp_field('profile', $user->get_iso_lang_id(), $cp_data, $cp_error);]]></find>
+				<action type="after-add"><![CDATA[					//--- Begin MOD: Verified User Website
+					if($data['website'] && $data['website_verify'])
+					{
+						if($this->check_user_website($data['website'], $data))
+						{
+							$data['website_verified'] = 1;
+						}
+						else
+						{
+							$data['website_verified'] = 0;
+							$error[] = 'WEBSITE_ERROR';
+						}
+					}
+					else if (empty($data['website_verify']))
+					{
+						$data['website_verified'] = 0;
+						$rand_key = strrev(strtolower(gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4) . gen_rand_string(4)));
+						$sql_array = array(
+							'user_website_verify_key' => $rand_key,
+						);
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_array) . '
+							WHERE user_id = ' . (int) $user->data['user_id'];
+						$db->sql_query($sql);
+					}
+					//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[						if ($config['allow_birthdays'])
+						{
+							$sql_ary['user_birthday'] = $data['user_birthday'];
+						}]]></find>
+				<action type="before-add"><![CDATA[						//--- Begin MOD: Verified User Website
+						if($data['website'])
+						{
+							$sql_ary += array(
+								'user_website_verified' => $data['website_verified']
+							);
+						}
+						//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				// Get additional profile fields and assign them to the template block var 'profile_fields']]></find>
+				<action type="before-add"><![CDATA[				//--- Begin MOD: Verified User Website
+				$template->assign_vars(array(
+					'U_WEBSITE_KEY_VERIFY'		=> $this->u_action . "&amp;verify=1",
+					'U_WEBSITE_KEY_UNVERIFY'	=> $this->u_action . "&amp;unverify=1",
+					'S_WEBSITE_VERIFIED'		=> $data['website_verified']
+				));
+				//--- End MOD: Verified User Website]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[}
+
+?>]]></find>
+				<action type="before-add"><![CDATA[	//--- Begin MOD: Verified User Website
+	function check_user_website($website_url, &$datas)
+	{
+		global $user, $phpbb_root_path, $phpEx;
+		if( $user->data['user_website'] == $website_url && $user->data['user_website_verified'] )
+		{
+			//Do not allow to change the website if the verification stay active!
+			$datas['website'] = $user->data['user_website'];
+			return true;
+		}
+		if( !function_exists('get_remote_file') )
+		{
+			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+		}
+		$errstr = '';
+		$errno = 0;
+		preg_match('/https?:\/\/([^\/]+)\/?/i', $website_url, $matches);
+		if( !empty($matches[1]) )
+		{
+			$extract_host = $matches[1];
+			$data = get_remote_file($extract_host, '', $user->data['user_website_verify_key'] . '.html', $errstr, $errno);
+			if( empty($errstr) && empty($errno) )
+			{
+				if( strpos($data, '#phpbb-website-verification#') !== false )
+				{
+					return true;
+				}
+			}
+			else if( $data = get_remote_file($extract_host, '', '', $errstr, $errno) )
+			{
+				if( preg_match('#<meta name="phpbb_verify" content="' . $user->data['user_website_verify_key'] . '" \/>#', $data) )
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="language/en/common.php">
+			<edit>
+				<find><![CDATA[	'VIEWED'					=> 'Viewed',]]></find>
+				<action type="before-add"><![CDATA[	//--- Begin MOD: Verified User Website
+	'VERIFIED'					=> 'Verified',
+	//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="language/en/ucp.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[//--- Begin MOD: Verified User Website
+$lang = array_merge($lang, array(
+	'WEBSITE_VERIFY'		=> 'Verify the Website',
+	'WEBSITE_ERROR'			=> 'Verification has failed: Cannot locate file or meta verification!',
+	'WEBSITE_REQUIRED'		=> '<em>Required to update Website</em>',
+	'WEBSITE_VERIFY_PROCEED'=> 'Proceed to the Website verification',
+	'WEBSITE_UNVERIFY'		=> 'Revoke the Website verification',
+	'WEBSITE_VERIFIED_OK'	=> 'Website verified',
+	'WEBSITE_VERIFIED_NO'	=> 'Website unverified',
+	//To validation Team: Using Hardcoded HTML because passed through trigger_error()...
+	'WEBSITE_VERIFY_EXP'	=> 'In order to complete the verification of your website, this step is to verify that you are the owner of it..
+								<br /> To do this, there is two available options:
+								<ul class="linklist navlinks"><li>&bull; Place <em><a href="%1$s">%2$s</a></em> file into your root Website: 
+								<br /><em>http://example.com/%2$s</em></li>
+								<li>&bull; Insert the following meta tag between &lt;head&gt;&lt;/head&gt; tags from your root index.
+								<br /><em>%3$s</em>
+								</ul>',
+));
+//--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/imageset/imageset.cfg">
+			<edit>
+				<find><![CDATA[img_icon_contact_www = icon_contact_www.gif*20*20]]></find>
+				<action type="after-add"><![CDATA[#--- Begin MOD: Verified User Website
+img_icon_contact_www_vd = icon_contact_www_vd.gif*20*20
+#--- End MOD: Verified User Website]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/memberlist_body.html">
+			<edit>
+				<find><![CDATA[		<td class="info"><!-- IF memberrow.U_WWW or memberrow.LOCATION --><!-- IF memberrow.U_WWW --><div><a href="{memberrow.U_WWW}" title="{L_VISIT_WEBSITE}: {memberrow.U_WWW}">{memberrow.U_SHORT_WWW}</a></div><!-- ENDIF --><!-- IF memberrow.LOCATION --><div>{memberrow.LOCATION}</div><!-- ENDIF --><!-- ELSE -->&nbsp;<!-- ENDIF --></td>]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[<a href="{memberrow.U_WWW}" title="{L_VISIT_WEBSITE}: {memberrow.U_WWW}">{memberrow.U_SHORT_WWW}</a>]]></inline-find>
+					<inline-action type="after-add"><![CDATA[<!-- IF memberrow.U_WWW_VERIFIED --> ({L_VERIFIED})<!-- ENDIF -->]]></inline-action>
+				</inline-edit>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/memberlist_view.html">
+			<edit>
+				<find><![CDATA[		<!-- IF U_WWW --><dt>{L_WEBSITE}:</dt> <dd><a href="{U_WWW}" title="{L_VISIT_WEBSITE}: {U_WWW}">{U_WWW}</a></dd><!-- ENDIF -->]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[<!-- IF U_WWW --><dt>{L_WEBSITE}]]></inline-find>
+					<inline-action type="after-add"><![CDATA[<!-- IF U_WWW_VERIFIED --> ({L_VERIFIED})<!-- ENDIF -->]]></inline-action>
+				</inline-edit>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/ucp_profile_profile_info.html">
+			<edit>
+				<find><![CDATA[		<dd><input type="text" name="website" id="website" maxlength="255" value="{WEBSITE}" class="inputbox" /></dd>]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[class="inputbox]]></inline-find>
+					<inline-action type="after-add"><![CDATA[<!-- IF S_WEBSITE_VERIFIED --> vuw_disabled" disabled="disabled<!-- ENDIF -->]]></inline-action>
+				</inline-edit>
+			</edit>
+			<edit>
+				<find><![CDATA[	</dl>]]></find>
+				<action type="before-add"><![CDATA[		<dd>
+			<label for="website_verify1">{L_WEBSITE_VERIFY}:</label>
+			<label for="website_verify1"><input type="radio" name="website_verify" id="website_verify1" value="1"<!-- IF S_WEBSITE_VERIFIED --> checked="checked"<!-- ENDIF --> onclick="dE('dd_verifiy', 1, 'block')" /> {L_YES}</label> 
+			<label for="website_verify0"><input type="radio" name="website_verify" id="website_verify0" value="0"<!-- IF not S_WEBSITE_VERIFIED --> checked="checked"<!-- ENDIF --> onclick="dE('dd_verifiy', 1, 'none')" /> {L_NO}</label>
+		</dd>
+		<dd id="dd_verifiy"<!-- IF not S_WEBSITE_VERIFIED --> style="display: none;"<!-- ENDIF -->><!-- IF S_WEBSITE_VERIFIED --><span class="vuw_verified">{L_WEBSITE_VERIFIED_OK}</span>: <a href="{U_WEBSITE_KEY_UNVERIFY}">{L_WEBSITE_UNVERIFY}</a>&nbsp;({L_WEBSITE_REQUIRED})<!-- ELSE --><span class="error">{L_WEBSITE_VERIFIED_NO}</span>: <a href="javascript:void(0)" onclick="popup('{U_WEBSITE_KEY_VERIFY}', 850, 550, '{LA_WEBSITE_VERIFY}')">{L_WEBSITE_VERIFY_PROCEED}</a><!-- ENDIF --></dd>]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[		<!-- IF postrow.U_PM or postrow.U_EMAIL or postrow.U_WWW or postrow.U_MSN or postrow.U_ICQ or postrow.U_YIM or postrow.U_AIM or postrow.U_JABBER]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[or postrow.U_WWW ]]></inline-find>
+					<inline-action type="after-add"><![CDATA[or postrow.U_WWW_VERIFIED ]]></inline-action>
+				</inline-edit>
+			</edit>
+			<edit>
+				<find><![CDATA[<!-- IF postrow.U_WWW --><li class="web-icon"><a href="{postrow.U_WWW}" title="{L_VISIT_WEBSITE}: {postrow.U_WWW}"><span>{L_WEBSITE}</span></a></li><!-- ENDIF -->]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[<!-- IF postrow.U_WWW ]]></inline-find>
+					<inline-action type="after-add"><![CDATA[and not postrow.U_WWW_VERIFIED ]]></inline-action>
+				</inline-edit>
+			</edit>
+			<edit>
+				<find><![CDATA[					<!-- IF postrow.U_MSN --><li class="msnm-icon"><a href="{postrow.U_MSN}" onclick="popup(this.href, 550, 320); return false;" title="{L_MSNM}"><span>{L_MSNM}</span></a></li><!-- ENDIF -->]]></find>
+				<action type="before-add"><![CDATA[					<!-- IF postrow.U_WWW_VERIFIED --><li class="web-icon-vd"><a href="{postrow.U_WWW_VERIFIED}" title="{L_VISIT_WEBSITE} ({L_VERIFIED}): {postrow.U_WWW_VERIFIED}"><span>{L_WEBSITE}</span></a></li><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/theme/buttons.css">
+			<edit>
+				<find><![CDATA[.web-icon, .web-icon a			{ background: none top left no-repeat; }]]></find>
+				<action type="after-add"><![CDATA[/*--- Begin MOD: Verified User Website*/
+.web-icon-vd, .web-icon-vd a		{ background: none top left no-repeat; }
+/*--- End MOD: Verified User Website*/]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[ul.profile-icons li.web-icon	{ width: {IMG_ICON_CONTACT_WWW_WIDTH}px; height: {IMG_ICON_CONTACT_WWW_HEIGHT}px; }]]></find>
+				<action type="after-add"><![CDATA[/*--- Begin MOD: Verified User Website*/
+ul.profile-icons li.web-icon-vd	{ width: {IMG_ICON_CONTACT_WWW_VD_WIDTH}px; height: {IMG_ICON_CONTACT_WWW_VD_HEIGHT}px; }
+/*--- End MOD: Verified User Website*/]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/theme/colours.css">
+			<edit>
+				<find><![CDATA[.web-icon, .web-icon a			{ background-image: url("{IMG_ICON_CONTACT_WWW_SRC}"); }]]></find>
+				<action type="after-add"><![CDATA[/*--- Begin MOD: Verified User Website*/
+.web-icon-vd, .web-icon-vd a		{ background-image: url("{IMG_ICON_CONTACT_WWW_VD_SRC}"); }
+/*--- End MOD: Verified User Website*/]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/theme/common.css">
+			<edit>
+				<find><![CDATA[.error {]]></find>
+				<action type="before-add"><![CDATA[/*--- Begin MOD: Verified User Website*/
+.vuw_verified {
+	font-weight: bold;
+	color: #29a105 !important;
+}
+.vuw_disabled {
+	color: #aaaaaa !important;
+}
+/*--- End MOD: Verified User Website*/]]></action>
+			</edit>
+		</open>
+		<php-installer><![CDATA[vuw_install.php]]></php-installer>
+	</action-group>
+</mod>
